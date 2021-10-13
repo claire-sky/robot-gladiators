@@ -4,9 +4,14 @@ var playerAttack = 10;
 var playerMoney = 10;
 
 var enemyNames = ["Roberto", "Amy Android", "Robo Trumble"];
-var enemyHealth = 50;
+var enemyHealth = randomNumber(40, 60);
 var enemyAttack = 12;
 
+var randomNumber = function(min, max) {
+    var value = Math.floor(Math.random() * (max - min + 1) + min);
+
+    return value;
+};
 
 var fight = function(enemyName) {
     // Repeat and execute as long as the enemy-robot is alive
@@ -23,14 +28,15 @@ var fight = function(enemyName) {
             if (confirmSkip) {
                 window.alert(playerName + " has decided to skip this fight. Goodbye!");
                 // Subtract money from playerMoney for skipping
-                playerMoney = playerMoney - 10;
+                playerMoney = Math.max(0, playerMoney - 10);
                 console.log("playerMoney", playerMoney);
                 break;
             }
         }
 
-        //Subtract the value of `playerAttack` from the value of `enemyHealth` and use that result to update the value in the `enemyHealth` variable
-        enemyHealth = enemyHealth - playerAttack;
+        // Subtract the value of `playerAttack` from the value of `enemyHealth` and use that result to update the value in the `enemyHealth` variable
+        var damage = randomNumber(playerAttack - 3, playerAttack);
+        enemyHealth = Math.max(0, enemyHealth - damaage);
         console.log(
             playerName + " attacked " + enemyName + ". " + enemyName + " now has " + enemyHealth + " health remaining."
         );
@@ -49,7 +55,8 @@ var fight = function(enemyName) {
         }
 
         // Subtract the value of `enemyAttack` from the value of `playerHealth` and use that result to update the value in the `playerHealth` variable.
-        playerHealth = playerHealth - enemyAttack;
+        var damage = randomNumber(enemyAttack - 3, enemyAttack)
+        playerHealth = Math.max(0, playerHealth - damage);
 
         // Log a resulting message to the console so we know that it worked.
         console.log(
@@ -58,15 +65,14 @@ var fight = function(enemyName) {
 
         // Check player's health
         if (playerHealth <= 0) {
-            window.alert("You have lost your robot in battle! Game Over!");
-
+            window.alert(playerName + " has died!");
             // Leave while() loop if player is dead
             break;
         } else {
             window.alert(playerName + " still has " + playerHealth + " health left.");
         }
     }
-}
+};
 
 // Function to START a new game
 var startGame = function() {
@@ -100,14 +106,16 @@ var startGame = function() {
                     shop();
                 }
             }
+        }
+        // If player is not alive, break out of the loop and let endGame function run
+        else {
+            window.alert("You have lost your robot in battle! Game Over!");
+            break;
         }   
     }
 
     // After the loop ends, player is either out of health or enemies to fight, so run the endGame function
     endGame();
-
-    // Play again
-    startGame();
 };
 
 // Function to END the entire game
@@ -115,8 +123,7 @@ var endGame = function() {
     // If player is still alive, player wins!
     if (playerHealth > 0) {
         window.alert("Gret job, you've survived the game! You now have a score of " + playerMoney + ".");
-    }
-    else {
+    } else {
         window.alert("You've lost your robot in battle.");
     }
 
@@ -124,10 +131,8 @@ var endGame = function() {
     var playAgainConfirm = window.confirm("Would you like to play again?");
 
     if (playAgainConfirm) {
-        //restart the game
         startGame();
-    }
-    else {
+    } else {
         window.alert("Thank you for playing Robot Gladiators! Come back soon!");
     }
 };
@@ -140,7 +145,7 @@ var shop = function() {
     );
 
     switch(shopOptionPrompt) {
-        case "REFILL": // New case
+        case "REFILL":
         case "refill":
             if (playerMoney < 7) {
                 window.alert("You don't have enough money!")
@@ -150,7 +155,7 @@ var shop = function() {
                 playerMoney = playerMoney - 7;
             };
             break;
-        case "UPGRADE": // New case
+        case "UPGRADE":
         case "upgrade":
             if (playerMoney < 7) {
                 window.alert("You don't have enough money!")
@@ -160,7 +165,7 @@ var shop = function() {
                playerMoney = playerMoney - 7;
             };
             break;
-        case "LEAVE": // New case
+        case "LEAVE":
         case "leave":
             window.alert("Leaving the store.");
             break;
