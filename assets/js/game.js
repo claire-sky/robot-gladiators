@@ -1,3 +1,8 @@
+function preloadImage(url) {
+    var img = new Image();
+    img.src = "./assets/images/RBG.jpg";
+}
+
 var randomNumber = function(min, max) {
     var value = Math.floor(Math.random() * (max - min + 1) + min);
 
