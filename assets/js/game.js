@@ -58,26 +58,42 @@ var enemyInfo = [
     }
 ];
 
-var fight = function(enemy) {
-    // Repeat and execute as long as the enemy-robot is alive
-    while(playerInfo.health > 0 && enemy.health > 0) {
-        // Ask player if they'd like to fight or run
-        var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
+var fightOrSkip = function() {
+    // Ask player if they'd like to fight or run
+    var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
 
-        // If player choses to skip
-        if (promptFight === "skip" || promptFight === "SKIP") {
-            // Confirm player wants to skip
-            var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+    // Conditional recursive function call
+    if (!promptFight) {
+        window.alert("You need to provide a valid answer! Please try again.");
+        return fightOrSkip();
+    }
+
+    // If player choses to skip
+    promptFight = promptFight.toLowerCase();
+
+    if (promptFight === "skip") {
+        // Confirm player wants to skip
+        var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+        
+        // If yes (true), leave fight
+        if (confirmSkip) {
+            window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
+            // Subtract money from playerInfo.money for skipping
+            playerInfo.money = Math.max(0, playerInfo.money - 10);
             
-            // If yes (true), leave fight
-            if (confirmSkip) {
-                window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
-                // Subtract money from playerInfo.money for skipping
-                playerInfo.money = Math.max(0, playerInfo.money - 10);
-                console.log("playerInfo.money", playerInfo.money);
-                break;
-            }
+            // Return true if player wants to leave
+            return true;
         }
+    }
+}
+
+var fight = function(enemy) {
+            // Repeat and execute as long as the enemy-robot is alive
+    while(playerInfo.health > 0 && enemy.health > 0) {
+        if (fightOrSkip()) {
+            // If true, leave fight be breaking loop
+            break;
+        };
 
         // Subtract the value of `playerInfo.attack` from the value of `enemy.health` and use that result to update the value in the `enemy.health` variable
         var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
